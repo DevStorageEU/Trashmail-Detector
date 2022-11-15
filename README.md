@@ -8,7 +8,7 @@ This makes it easy to find email addresses that are unlikely to be legitimate,
 such as those belonging to a spammer or phisher.
 
 --
-
+### What can the API be used for?
 5-minute emails or also known as trash emails, 
 are usually used to protect the data protection and privacy of users. 
 However, there are applications that are designed to contact users at any time, 
