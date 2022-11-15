@@ -16,7 +16,6 @@ public class Main {
 
         try {
             getInstance().getContentFetchExecutor().run();
-
             getInstance().getHttpServer().listen();
         } catch (Exception e) {
             e.printStackTrace();

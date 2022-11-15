@@ -1,7 +1,13 @@
 package eu.devstorage.tmd.database;
 
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+import com.google.gson.stream.JsonReader;
+
 import java.io.*;
+import java.lang.reflect.Type;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
@@ -15,7 +21,7 @@ import java.util.stream.Stream;
 public class DomainDatabase {
     public static List<String> urlSources = new ArrayList<>();
     public static List<String> domains = new ArrayList<>();
-
+    public static final File DOMAIN_FILE = new File("domains.json");
     static  {
         urlSources.add("https://raw.githubusercontent.com/wesbos/burner-email-providers/master/emails.txt");
         urlSources.add("https://raw.githubusercontent.com/disposable-email-domains/disposable-email-domains/master/disposable_email_blocklist.conf");
@@ -23,8 +29,17 @@ public class DomainDatabase {
     }
 
     public void initializeDatabaseContent() {
+        try {
+            Type domainType = new TypeToken<List<String>>() {}.getType();
+            JsonReader jsonReader = new JsonReader(new FileReader(DOMAIN_FILE));
+            List<String> data = new Gson().fromJson(jsonReader, domainType);
+            domains.addAll(data);
+        } catch (FileNotFoundException e) {
+            System.out.println("[WARNING] Currently there is no domain file (domains.json). This will be created after the first domain queries.");
+        }
+
         urlSources.forEach(source -> {
-            System.out.println("Try to fetch domains from " + source);
+            System.out.println("[INFO] Try to fetch domains from " + source);
             try {
                 URLConnection conn = new URL(source).openConnection();
                 try (BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8))) {
@@ -36,13 +51,27 @@ public class DomainDatabase {
                         domainsAdded.addAndGet(1);
                     });
 
-                    System.out.println("Added " + domainsAdded.get()+ " new Domains to the cache");
+                    System.out.println("[INFO] Added " + domainsAdded.get()+ " new Domains to the cache");
                 }
             } catch (IOException e) {
-                System.err.println("Failed while fetching domain list from " + source +". Error: " + e.getMessage());
+                System.err.println("[INFO] Failed while fetching domain list from " + source +". Error: " + e.getMessage());
             }
 
         });
+
+
+        try {
+            if(DOMAIN_FILE.delete() && DOMAIN_FILE.createNewFile()){
+                PrintWriter writer = new PrintWriter(DOMAIN_FILE, StandardCharsets.UTF_8);
+                writer.println(new GsonBuilder().setPrettyPrinting().create().toJson(domains));
+                writer.close();
+                System.out.println("[SUCCESS] Added all Domains to the domains.json");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
     }
 
     public boolean found(String domain){
