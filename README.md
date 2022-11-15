@@ -29,7 +29,7 @@ such as those belonging to a spammer or phisher.
 ```bash
 {
   "processing ": "0ms",
-  "provided": "domain",
+  "provided": "email",
   "domain": "trashmail.com",
   "status": "suspicious"
 }
