@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
+import eu.devstorage.tmd.modal.ConfigModal;
 
 import java.io.*;
 import java.lang.reflect.Type;
@@ -18,17 +19,20 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static eu.devstorage.tmd.Main.CONFIG_FILE;
+import static eu.devstorage.tmd.Main.DOMAIN_FILE;
+
 public class DomainDatabase {
     public static List<String> urlSources = new ArrayList<>();
     public static List<String> domains = new ArrayList<>();
-    public static final File DOMAIN_FILE = new File("domains.json");
-    public static final File CONFIG_FILE = new File("config.json");
+
 
 
     public void loadURlSources() {
         try {
             JsonReader jsonReader = new JsonReader(new FileReader(CONFIG_FILE));
-            List<String> data = new Gson().fromJson(jsonReader, new TypeToken<List<String>>() {}.getType());
+            ConfigModal config = new Gson().fromJson(jsonReader, ConfigModal.class);
+            List<String> data = config.sources;
             urlSources.addAll(data);
             urlSources.forEach(s -> System.out.println("[CONFIG] Loaded URL Source " + s +" from config."));
 

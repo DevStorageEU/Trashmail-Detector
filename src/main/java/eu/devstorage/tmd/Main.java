@@ -4,7 +4,12 @@ import eu.devstorage.tmd.database.ContentFetchExecutor;
 import eu.devstorage.tmd.database.DomainDatabase;
 import eu.devstorage.tmd.http.ApiHttpServer;
 
+import java.io.File;
+
 public class Main {
+
+    public static final File DOMAIN_FILE = new File("domains.json");
+    public static final File CONFIG_FILE = new File("config.json");
 
     private static Main instance;
     private ApiHttpServer httpServer;

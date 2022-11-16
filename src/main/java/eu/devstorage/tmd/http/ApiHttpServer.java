@@ -2,12 +2,15 @@ package eu.devstorage.tmd.http;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.stream.JsonReader;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import eu.devstorage.tmd.Main;
 import eu.devstorage.tmd.database.DomainDatabase;
+import eu.devstorage.tmd.modal.ConfigModal;
 
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
@@ -15,6 +18,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
+
+import static eu.devstorage.tmd.Main.CONFIG_FILE;
+
 
 /**
  * The HttpServer provides the web interface so that external sources can match the data.
@@ -30,7 +36,10 @@ public class ApiHttpServer {
      * @throws Exception If the HTTP server cannot be started. Reasons can be an already used port or missing rights.
      */
     public void listen() throws Exception {
-        HttpServer server = HttpServer.create(new InetSocketAddress(80), 0);
+        JsonReader jsonReader = new JsonReader(new FileReader(CONFIG_FILE));
+        ConfigModal config = new Gson().fromJson(jsonReader, ConfigModal.class);
+
+        HttpServer server = HttpServer.create(new InetSocketAddress(config.host,config.port), 0);
         server.createContext("/", new RootHandler());
         server.createContext("/check", new CheckHandler());
         server.setExecutor(null); // creates a default executor
