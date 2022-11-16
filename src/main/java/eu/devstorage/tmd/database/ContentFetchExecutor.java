@@ -6,6 +6,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * The ContentFetchExecutor takes care of updating the data from external sources with the cache on a daily basis.
+ * @see DomainDatabase
+ */
 
 public class ContentFetchExecutor  {
 

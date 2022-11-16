@@ -6,6 +6,7 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import eu.devstorage.tmd.Main;
+import eu.devstorage.tmd.database.DomainDatabase;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -15,11 +16,19 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+/**
+ * The HttpServer provides the web interface so that external sources can match the data.
+ */
+
 public class ApiHttpServer {
     private static final String DOMAIN_NAME_PATTERN_REGEX = "^((?!-)[A-Za-z0-9-]{1,63}(?<!-)\\.)+[A-Za-z]{2,6}$";
     private static final Pattern DOMAIN_NAME_PATTERN = Pattern.compile(DOMAIN_NAME_PATTERN_REGEX);
 
 
+    /**
+     * The list method starts the web server and defines the handlers for individual routes.
+     * @throws Exception If the HTTP server cannot be started. Reasons can be an already used port or missing rights.
+     */
     public void listen() throws Exception {
         HttpServer server = HttpServer.create(new InetSocketAddress(80), 0);
         server.createContext("/", new RootHandler());
@@ -29,6 +38,10 @@ public class ApiHttpServer {
         System.out.println("Server is listening on " + server.getAddress().toString());
     }
 
+
+    /**
+     * The RootHandler maps the <pre>/</pre> route and displays the usage of the API as well as the loaded domain cache inventory.
+     */
     static class RootHandler implements HttpHandler {
         @Override
         public void handle(HttpExchange exchange) throws IOException {
@@ -45,6 +58,11 @@ public class ApiHttpServer {
     }
 
 
+    /**
+     * The CheckHandler is the heart of the application and provides the interface for checking domains and emails.
+     * It validates the request and either displays error messages or processes the request with logic and checks
+     * domains with the domain inventory from the cache.
+     */
     static class CheckHandler implements HttpHandler {
         @Override
         public void handle(HttpExchange exchange) throws IOException {
@@ -81,6 +99,11 @@ public class ApiHttpServer {
         }
     }
 
+    /**
+     * QueryToMap extracts the GET query from Http requests and maps it to a hashmap.
+     * @param query Query from the HTTP request. <pre>exchange.getRequestURI().getQuery()</pre>
+     * @return GET parameters
+     */
     private static Map<String, String> queryToMap(String query) {
         if (query == null) {
             return null;

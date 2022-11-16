@@ -14,6 +14,15 @@ public class Main {
 
     public static void main(String[] args) {
 
+        /**
+         * At startup, the URL Sources are loaded first, which should be the only content of config.json.
+         * Once these are loaded, the schedular is started which updates the domains in the cache immediately and then in 1-day intervals.
+         * Meanwhile the simple HTTP server starts.
+         *
+         * @see DomainDatabase
+         * @see ContentFetchExecutor
+         * @see ApiHttpServer
+         */
         try {
             getInstance().getDatabase().loadURlSources();
             getInstance().getContentFetchExecutor().run();
