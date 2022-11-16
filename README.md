@@ -52,3 +52,9 @@ The status if the domain/email is suspicious can be seen via the key 'status'.
 **Suspicious**: ``"status": "suspicious"``
 
 **Unsuspicious**: ``"status": "unsuspicious"``
+
+---
+
+## Config
+
+The ``config.json`` is used to define the sources for domain blacklists. The configs are loaded after each restart of the software.

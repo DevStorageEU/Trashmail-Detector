@@ -15,6 +15,7 @@ public class Main {
     public static void main(String[] args) {
 
         try {
+            getInstance().getDatabase().loadURlSources();
             getInstance().getContentFetchExecutor().run();
             getInstance().getHttpServer().listen();
         } catch (Exception e) {
