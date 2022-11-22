@@ -32,7 +32,7 @@ public class ApiHttpServer {
 
 
     /**
-     * The list method starts the web server and defines the handlers for individual routes.
+     * The listen() method starts the web server and defines the handlers for individual routes.
      * @throws Exception If the HTTP server cannot be started. Reasons can be an already used port or missing rights.
      */
     public void listen() throws Exception {
